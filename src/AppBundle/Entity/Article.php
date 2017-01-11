@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -12,34 +13,38 @@ class Article
 {	
 
 	/**
-	* @ORM\Column(type="integer")
-	* @ORM\Id
-	* @ORM\GeneratedValue(strategy="AUTO")
-	*/
+	 * @ORM\Column(type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
 	private $id;
 	/**
-	* @ORM\ Column(type="string",length=255)
-	*/
+	 * @ORM\ Column(type="string",length=255)
+	 * @Assert\NotBlank()
+	 */
 	private $title;
 
 	/**
-	* @ORM\ Column(type="string",length=255)
-	*/
+	 * @ORM\ Column(type="string",length=255)
+	 * @Assert\NotBlank()
+	 */
 	private $headerImage;
 
 	/**
-	* @ORM\ Column(type="string",length=255)
-	*/
+	 * @ORM\ Column(type="string",length=255)
+	 * @Assert\NotBlank()
+	 */
 	private $author;
 
 	/**
-	* @ORM\Column(type="datetime")
-	*/
+	 * @ORM\Column(type="datetime")
+	 */
 	private $createdAt;
 
 	/**
-	* @ORM\Column(type="text")
-	*/
+	 * @ORM\Column(type="text")
+	 * @Assert\NotBlank()
+	 */
 	private $content;
 
 	function __construct()

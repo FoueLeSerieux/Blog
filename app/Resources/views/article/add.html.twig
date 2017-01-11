@@ -22,6 +22,16 @@
 	{#{ form(articleForm) }#}
 
 <article>
+
+	{% if app.request.get('_route') == 'article_add' %}
+		{% set submitButton = 'Add' %}
+		{% set title = 'Add a new article' %}
+	{% else %}
+		{% set submitButton = 'Update' %}
+		{% set title = 'Update the article "'~article.title~'"' %}
+	{% endif %}
+
+	<h1>{{ title }}</h1>
 	<div class="container">
 		<div class="row">
 			{{ form_start(articleForm) }}
