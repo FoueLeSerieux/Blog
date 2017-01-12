@@ -1,6 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} - Add a new article{% endblock %}
+{% if app.request.get('_route') == 'article_add' %}
+	{% set submitButton = 'Add' %}
+	{% set title = 'Add a new article' %}
+{% else %}
+	{% set submitButton = 'Update' %}
+	{% set title = 'Update the article "'~article.title~'"' %}
+{% endif %}
+
+{% block title %}{{ parent() }} - {{ title }}{% endblock %}
 
 {% block body %}
 	<!-- Page Header -->
@@ -23,14 +31,6 @@
 
 <article>
 
-	{% if app.request.get('_route') == 'article_add' %}
-		{% set submitButton = 'Add' %}
-		{% set title = 'Add a new article' %}
-	{% else %}
-		{% set submitButton = 'Update' %}
-		{% set title = 'Update the article "'~article.title~'"' %}
-	{% endif %}
-
 	<h1>{{ title }}</h1>
 	<div class="container">
 		<div class="row">
@@ -42,8 +42,12 @@
 					{{ form_errors(articleForm.title) }}
 				</div>
 
-				{{ form_row(articleForm.headerImage) }}
 				{{ form_row(articleForm.author) }}
+
+				{% if app.request.get('_route') == 'article_update' %}
+					<img src="{{ articleImagePath }}" width="500">
+				{% endif %}
+				{{ form_row(articleForm.headerImage) }}
 				{{ form_row(articleForm.content) }}
 
 				<input type="submit" name="add" value="add" class="btn btn-success pull-right">

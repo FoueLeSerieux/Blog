@@ -18,6 +18,7 @@ class Article
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $id;
+	
 	/**
 	 * @ORM\ Column(type="string",length=255)
 	 * @Assert\NotBlank()
@@ -26,7 +27,7 @@ class Article
 
 	/**
 	 * @ORM\ Column(type="string",length=255)
-	 * @Assert\NotBlank()
+	 * @Assert\Image()
 	 */
 	private $headerImage;
 

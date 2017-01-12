@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Article;
 use AppBundle\Form\ArticleType;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @Route("/article")
@@ -23,14 +24,22 @@ class ArticleController extends Controller
 	}
 
 	/**
-	 * @Route("/{id}", 
+	 * @Route("/show/{id}", 
 	 *   name="article_show",
 	 *   defaults = {"id" = 1},
 	 *   requirements={"id": "\d+"})
 	 */
-	public function showAction()
+	public function showAction(Request $request, Article $article)
 	{
-		return $this->render('article/show.html.twig');
+		$articleImagePath = $article->getHeaderImage();
+		$article->setHeaderImage(
+			new File($this->getParameter('file_path').$articleImagePath)
+		);
+
+		return $this->render('article/show.html.twig', [
+			'article' => $article,
+			'articleImagePath' => $articleImagePath
+		]);
 	}
 
 	/**
@@ -40,14 +49,16 @@ class ArticleController extends Controller
 	{
 		$article = new Article();
 		$form = $this->createForm(ArticleType::class, $article);
-
 		$form->handleRequest($request);
 
 		if ($form->isValid()) {
+			$this->get('image.uploader')->upload($article);
 			$em = $this->getDoctrine()->getManager();
 
 			$em->persist($article);
+			// dump($article);die;
 			$em->flush();
+
 
 			$this->addFlash('success', "the article was successfully saved in database");
 
@@ -59,13 +70,18 @@ class ArticleController extends Controller
 	/**
 	 * @Route("/update/{id}", name="article_update")
 	 */
-	public function updateAction(Article $article, Request $request)
+	public function updateAction(Request $request, Article $article)
 	{
-		$form = $this->createForm(ArticleType::class, $article);
+		$articleImagePath = $article->getHeaderImage();
+		$article->setHeaderImage(
+			new File($this->getParameter('file_path').$articleImagePath)
+		);
 
+		$form = $this->createForm(ArticleType::class, $article);
 		$form->handleRequest($request);
 
 		if ($form->isValid()) {
+			$this->get('image.uploader')->upload($article);
 			$this->getDoctrine()->getManager()->flush();
 
 			$this->addFlash('success', "the article was successfully updated in database");
@@ -74,7 +90,8 @@ class ArticleController extends Controller
 		}
 		return $this->render('article/add.html.twig', [
 			'articleForm' => $form->createView(),
-			'article' => $article
+			'article' => $article,
+			'articleImagePath' => $articleImagePath
 		]);
 	}
 }
